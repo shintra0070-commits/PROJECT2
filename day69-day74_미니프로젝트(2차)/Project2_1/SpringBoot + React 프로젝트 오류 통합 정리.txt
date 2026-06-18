@@ -1,0 +1,775 @@
+# SpringBoot + React 프로젝트 오류 통합 정리
+
+---
+
+1. Google 로그인 상태 유지 안됨
+
+---
+
+[문제]
+
+* 구글 로그인 성공 후 로그인 상태 유지 안됨
+* 마이페이지 접근 시 로그인 필요 메시지 출력
+
+[원인]
+localStorage 저장 누락
+
+[해결]
+
+```js
+localStorage.setItem(
+    "user_info",
+    JSON.stringify(login_data)
+);
+```
+
+---
+
+2. localStorage 객체 문제
+
+---
+
+[문제]
+사용자 정보 이상 출력
+
+[원인]
+localStorage.getItem()은 문자열 반환
+
+[해결]
+
+```js
+JSON.parse(
+    localStorage.getItem("user_info")
+);
+```
+
+---
+
+3. Google 로그인 정보 오류
+
+---
+
+[오류]
+
+```txt
+user.id undefined
+```
+
+[원인]
+Google 로그인 데이터 구조 다름
+
+[해결]
+
+```js
+console.log(user_info)
+```
+
+확인 후:
+
+```js
+user_info.email
+```
+
+또는
+
+```js
+user_info.id
+```
+
+사용
+
+---
+
+4. 댓글 등록 안됨
+
+---
+
+[원인]
+백엔드 Entity 필드명과 프론트 JSON 필드명 불일치
+
+[잘못된 코드]
+
+```js
+commentContent
+memId
+comId
+```
+
+[해결]
+
+```js
+commentcontent
+memid
+comid
+```
+
+---
+
+5. 댓글 최신순 정렬 문제
+
+---
+
+[문제]
+최신 댓글이 아래에 표시됨
+
+[해결]
+
+```sql
+ORDER BY comment_created DESC
+```
+
+---
+
+6. 댓글 삭제 실패
+
+---
+
+[원인]
+Oracle DATE와 Java LocalDateTime 형식 불일치
+
+[해결]
+
+Repository:
+
+```sql
+TO_CHAR(
+    comment_created,
+    'YYYY-MM-DD"T"HH24:MI'
+)
+```
+
+Frontend:
+
+```js
+comment.commentcreated.substring(0,16)
+```
+
+---
+
+7. 댓글 전체 삭제됨
+
+---
+
+[원인]
+
+```java
+deleteByComid(...)
+```
+
+사용
+
+[실제 SQL]
+
+```sql
+DELETE FROM comment_test
+WHERE com_id = ?
+```
+
+[해결]
+복합 조건 사용:
+
+```java
+deleteComment(
+    comid,
+    memid,
+    commentcreated
+)
+```
+
+---
+
+8. 댓글 삭제 완료 문구 오류
+
+---
+
+[문제]
+삭제 완료 메시지는 뜨지만 실제 삭제 안됨
+
+[해결]
+DELETE 결과 row count 확인 후 처리
+
+---
+
+9. ORA-01400 NULL 오류
+
+---
+
+[오류]
+
+```txt
+ORA-01400:
+NULL 을 COMMENT_CREATED 안에 삽입할 수 없습니다
+```
+
+[원인]
+복합키 시간값 NULL
+
+[해결]
+
+```java
+@PrePersist
+public void prePersist(){
+
+    this.commentcreated =
+        LocalDateTime.now();
+}
+```
+
+---
+
+10. 수정/삭제 버튼 안보임
+
+---
+
+[원인]
+객체와 문자열 비교
+
+[잘못된 코드]
+
+```js
+user_info === comment.memid
+```
+
+[해결]
+
+```js
+user_info?.id === comment.memid
+```
+
+---
+
+11. textarea 오류
+
+---
+
+[원인]
+state 이름 불일치
+
+[잘못된 코드]
+
+```js
+value={commentcontent}
+```
+
+[해결]
+
+```js
+value={commentContent}
+```
+
+---
+
+12. Oracle DATE DEFAULT SYSDATE 저장 문제
+
+---
+
+[문제]
+작성일(INQ_CREATED)이 NULL 저장
+
+[해결]
+Entity 매핑 및 DEFAULT SYSDATE 적용 확인
+
+---
+
+13. 게시글 최신순 정렬 문제
+
+---
+
+[문제]
+최신 게시글이 마지막 출력
+
+[해결]
+
+```sql
+ORDER BY com_created DESC
+```
+
+---
+
+14. 좋아요순 / 조회수순 정렬 기능 구현
+
+---
+
+[해결]
+
+```js
+sort()
+```
+
+및 state 기반 동적 정렬 구현
+
+---
+
+15. 정렬 상태 및 페이지 유지 문제
+
+---
+
+[문제]
+상세조회 후 목록 복귀 시 초기화
+
+[해결]
+
+```js
+localStorage
+```
+
+사용하여 currentPage, sortType 저장
+
+---
+
+16. 게시글 수정 시 카테고리 반영 오류
+
+---
+
+[문제]
+카테고리 수정 안됨
+
+[해결]
+Frontend 및 Service에:
+
+```js
+com_category
+```
+
+추가
+
+---
+
+17. React state 및 navigate 갱신 문제
+
+---
+
+[문제]
+수정 후 이전 데이터 유지
+
+[해결]
+
+```js
+window.location.href
+```
+
+사용하여 새로고침 처리
+
+---
+
+18. Hibernate SQL 로그 출력 문제
+
+---
+
+[문제]
+SELECT만 출력되고 INSERT 안보임
+
+[해결]
+Hibernate logging.level 및 show-sql 설정 확인
+
+---
+
+19. 커뮤니티 인기글 조회 구현
+
+---
+
+[문제]
+Oracle ROWNUM + ORDER BY 처리 문제
+
+[해결]
+서브쿼리 사용
+
+---
+
+20. React sort() 정렬 이해
+
+---
+
+[문제]
+
+```js
+b.com_view - a.com_view
+```
+
+이해 어려움
+
+[해결]
+sort() 양수/음수 반환 원리 학습
+
+---
+
+21. Hibernate 컬럼 타입 오류
+
+---
+
+[오류]
+
+```txt
+Schema validation: wrong column type encountered
+```
+
+[원인]
+Oracle NUMBER 타입과 Java float/double 불일치
+
+[해결]
+
+```java
+BigDecimal
+```
+
+사용
+
+예시:
+
+```java
+private BigDecimal he_glu;
+private BigDecimal he_chol;
+private BigDecimal predict;
+```
+
+---
+
+22. React Router 경로 오류
+
+---
+
+[오류]
+
+```txt
+No routes matched location
+```
+
+[원인]
+Route path 대소문자 불일치
+
+[해결]
+
+```txt
+/community/list_paging
+```
+
+형태로 통일
+
+---
+
+23. Git commit 오류
+
+---
+
+[오류]
+
+```bash
+git commit "파일 수정"
+```
+
+[원인]
+-m 옵션 누락
+
+[해결]
+
+```bash
+git commit -m "파일 수정"
+```
+
+---
+
+24. Recharts 설치 오류
+
+---
+
+[오류]
+
+```txt
+Can't resolve 'recharts'
+```
+
+[해결]
+
+```bash
+npm install recharts
+```
+
+---
+
+25. 회원 수정 오류
+
+---
+
+[문제]
+수정 완료 메시지 뜨지만 DB 반영 안됨
+
+[원인]
+@RequestBody 누락 및 mem_phone NULL
+
+[해결]
+
+Controller:
+
+```java
+public ResponseEntity<Member>
+setMemberUpdate(
+    @RequestBody Member p_member
+)
+```
+
+Service:
+
+```java
+member_update.setMem_phone(
+    p_member.getMem_phone()
+);
+```
+
+---
+
+26. Member not-null 오류
+
+---
+
+[오류]
+
+```txt
+not-null property references null
+```
+
+[원인]
+mem_phone 값 누락
+
+[해결]
+
+```js
+const [member, setMember] = useState({
+
+    mem_id : "",
+    mem_name : "",
+    mem_phone : ""
+});
+```
+
+---
+
+27. 회원 삭제 오류
+
+---
+
+[오류]
+
+```txt
+ORA-02292
+FK_COMMENT_MEMBER 위배
+```
+
+[원인]
+댓글 남아있는 회원 삭제 시도
+
+[해결]
+댓글 먼저 삭제 후 회원 삭제
+
+---
+
+28. 좋아요 중복 문제
+
+---
+
+[문제]
+같은 사용자가 여러 번 좋아요 가능
+
+[해결]
+
+```js
+const likeKey =
+`like_${com_id}_${user_info.id}`;
+```
+
+---
+
+29. 내 게시글 조회 오류
+
+---
+
+[오류]
+페이지 이동은 되지만 조회 안됨
+
+[원인]
+
+```txt
+mem_id = undefined
+```
+
+[해결]
+
+```js
+const user_info = JSON.parse(
+    localStorage.getItem("user_info")
+);
+```
+
+```js
+<Link
+ to={`/community/list_paging?mem_id=${user_info.id}`}
+>
+```
+
+---
+
+30. CommunityRepository 오류
+
+---
+
+[오류]
+
+```txt
+No property 'mem' found
+```
+
+[원인]
+findByMem_id 자동 생성 실패
+
+[해결]
+
+```java
+@Query(nativeQuery=true)
+```
+
+사용
+
+---
+
+31. Paging nativeQuery 오류
+
+---
+
+[문제]
+Page 조회 안됨
+
+[원인]
+countQuery 누락
+
+[해결]
+countQuery 추가
+
+---
+
+32. JSX 변수 출력 오류
+
+---
+
+[잘못된 코드]
+
+```js
+"/member/view/$user_info.id"
+```
+
+[해결]
+
+```js
+<Link to={`/member/view/${user_info.id}`}>
+```
+
+---
+
+33. list.map 오류
+
+---
+
+[오류]
+
+```txt
+list.map is not a function
+```
+
+[원인]
+
+```js
+setList(res.data.content[0])
+```
+
+[해결]
+
+```js
+setList(res.data.content)
+```
+
+---
+
+34. Axios 500 오류
+
+---
+
+[오류]
+
+```txt
+Request failed with status code 500
+```
+
+[원인]
+백엔드 Exception 발생
+
+[해결]
+SpringBoot 콘솔의:
+
+```txt
+Caused by
+```
+
+로그 확인
+
+---
+
+35. Community Paging API 오류
+
+---
+
+[문제]
+mem_id 전달 안됨
+
+[해결]
+
+```js
+export const getCommunityPaging =
+(page, size, mem_id) =>
+
+springApi.get(
+`/community/list_paging?page=${page}&size=${size}`
++(mem_id ? `&mem_id=${mem_id}` : "")
+);
+```
+
+---
+
+36. 핵심적으로 배운 점
+
+---
+
+1. camelCase / 소문자 필드명 통일 중요
+
+```txt
+commentContent
+commentcontent
+```
+
+2. Oracle DATE + LocalDateTime 비교 매우 주의
+
+3. 복합키보다 PK 하나 사용이 안전
+
+```txt
+comment_id
+```
+
+4. localStorage는 문자열 저장
+
+```js
+JSON.stringify()
+JSON.parse()
+```
+
+필수
+
+5. DELETE / UPDATE 결과 row count 반드시 확인
+
+6. React state와 backend JSON 구조 항상 일치 확인
+
+7. Oracle Paging은 countQuery 필수
+
+8. 오류 발생 시 SpringBoot 콘솔의
+
+```txt
+Caused by
+```
+
+로그 먼저 확인
