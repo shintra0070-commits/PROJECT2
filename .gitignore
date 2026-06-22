@@ -70,7 +70,7 @@ out/
 .settings
 .springBeans
 .sts4-cache
-bin/
+!bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
@@ -147,6 +147,11 @@ datasets/
 *.feather
 *.npz
 *.npy
+*.keras
+*.h5
+!**/airport_data/**/*.csv
+!**/4조 정제 데이터/**/*.csv
+!**/프로젝트_최종폴더/**
 
 # MLflow / W&B / 실험 로그
 mlruns/
@@ -214,6 +219,14 @@ $RECYCLE.BIN/
 *~
 
 # ===========================
+# 백터DB 사용파일
+# ===========================
+!**/Chroma_DB/
+!**/Chroma_DB/**
+!**/FAISS_DB/**
+!**/Chroma_DB_Movie/**
+!**/Chroma_DB_Tour/**
+# ===========================
 # 기타
 # ===========================
 *.log
@@ -223,5 +236,4 @@ $RECYCLE.BIN/
 *.swo
 tmp/
 temp/
-
-*.sas7bdat
+utill/
