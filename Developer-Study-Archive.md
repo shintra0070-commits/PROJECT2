@@ -35,7 +35,7 @@ Python 기반 데이터 분석, 머신러닝, 딥러닝 학습을 중심으로 J
 | Language | Python, Java, SQL, JavaScript |
 | Data Analysis | Pandas, NumPy |
 | Machine Learning | Scikit-learn |
-| Deep Learning | TensorFlow, Keras |
+| Deep Learning | TensorFlow, Keras, ANN, DNN, CNN, LLM |
 | Visualization | Matplotlib, Seaborn |
 | Backend | Spring Boot, REST API, JDBC |
 | Frontend | React, React Router, Axios |
@@ -55,7 +55,8 @@ Python 기반 데이터 분석, 머신러닝, 딥러닝 학습을 중심으로 J
 - 데이터 전처리 및 특성 선택(Feature Engineering)
 - 머신러닝 모델 개발 및 성능 평가
 - TensorFlow, Keras 기반 딥러닝 모델 개발
-- 인공신경망(ANN) 및 딥러닝 모델 학습
+- 인공신경망(ANN), 심층신경망(DNN), 합성곱신경망(CNN) 학습
+- LLM(Large Language Model)의 기본 개념 및 활용 방식 이해
 - 분류 및 예측 모델 구현
 
 ### 머신러닝과 딥러닝 이해
@@ -78,15 +79,22 @@ Python 기반 데이터 분석, 머신러닝, 딥러닝 학습을 중심으로 J
 #### 딥러닝 모델 이해
 
 딥러닝은 인공신경망을 기반으로 복잡한 데이터의 특징을 자동으로 학습하는 머신러닝의 한 분야입니다.  
-TensorFlow와 Keras를 활용하여 ANN 모델을 구현하고, 데이터 특성에 따라 분류와 회귀 문제에 적용했습니다.
+TensorFlow와 Keras를 활용하여 ANN, DNN, CNN 모델의 구조를 학습하고, 데이터 특성에 따라 분류와 회귀 문제에 적용했습니다. 또한 LLM의 기본 개념과 자연어 처리 분야에서의 활용 방식을 함께 학습했습니다.
 
 | 유형 | 설명 | 주요 개념 | 성능 평가 |
 | --- | --- | --- | --- |
 | ANN 분류 모델 | 입력 데이터를 여러 클래스 중 하나로 예측하는 신경망 모델 | Dense Layer, Activation Function, Cross Entropy, Softmax/Sigmoid | Accuracy, Precision, Recall, F1-score, Loss |
 | ANN 회귀 모델 | 입력 데이터를 기반으로 연속적인 수치 값을 예측하는 신경망 모델 | Dense Layer, ReLU, MSE Loss, Optimizer | MAE, MSE, RMSE, Loss |
+| DNN 모델 | 여러 은닉층을 쌓아 복잡한 비선형 패턴을 학습하는 심층신경망 모델 | Hidden Layer, Backpropagation, Dropout, Batch Normalization | Accuracy, Loss, MAE, RMSE |
+| CNN 모델 | 이미지나 공간적 패턴을 가진 데이터에서 특징을 추출하는 딥러닝 모델 | Convolution Layer, Pooling, Filter, Feature Map | Accuracy, Precision, Recall, F1-score, Loss |
+| LLM | 대규모 텍스트 데이터를 기반으로 자연어를 이해하고 생성하는 언어 모델 | Token, Embedding, Transformer, Prompt Engineering | 응답 정확성, 일관성, 문맥 이해도, 활용 목적 적합성 |
 
 딥러닝 모델 학습 과정에서는 손실 함수(Loss Function), 활성화 함수(Activation Function), 옵티마이저(Optimizer), Epoch, Batch Size 등의 개념을 학습했습니다.  
+DNN은 은닉층을 깊게 구성하여 복잡한 패턴을 학습하는 구조로 이해했으며, CNN은 Convolution과 Pooling 과정을 통해 이미지 데이터의 특징을 추출하는 방식으로 학습했습니다.  
 또한 학습 데이터와 검증 데이터의 성능 차이를 비교하여 과적합 여부를 확인하고, Dropout, Early Stopping 등의 방법을 통해 모델의 일반화 성능을 개선하는 과정을 실습했습니다.
+
+LLM은 대규모 언어 데이터를 기반으로 문장을 이해하고 생성하는 모델로, Transformer 구조와 Prompt Engineering의 기본 개념을 학습했습니다.  
+특히 LLM은 정량적인 정확도뿐만 아니라 응답의 정확성, 일관성, 문맥 이해도, 활용 목적에 맞는 결과 생성 여부를 함께 고려하여 평가할 수 있음을 이해했습니다.
 
 학습한 머신러닝 및 딥러닝 개념은 심근경색 발생 위험도 예측 웹 서비스와 BDI 운임지수 예측 프로젝트에 적용하여, 실제 데이터를 기반으로 예측 모델을 구현하는 경험으로 확장했습니다.
 
